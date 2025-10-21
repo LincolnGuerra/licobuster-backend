@@ -1,22 +1,16 @@
 const express = require('express');
 const app = express();
 
-require('dotenv').config();
-console.log('MONGODB_URI:', process.env.MONGODB_URI);
-
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Conectado ao MongoDB Atlas!'))
-  .catch(err => console.error('Erro ao conectar ao Atlas:', err));
-
-app.use(express.json()); // Para parsear JSON no body
-app.use('/api/auth', require('./routes/auth')); // Rotas de autenticação
-
-app.get('/', (req, res) => {
-  res.send('Olá do backend de licobuster!');
+app.use(express.json());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
 });
 
-app.listen(5000, () => {
-  console.log('Servidor rodando em http://localhost:5000');
+app.post('/api/auth/register', (req, res) => {
+  res.json({ message: 'Registro bem-sucedido', data: req.body });
+});
+
+app.listen(process.env.PORT || 10000, () => {
+  console.log('Server running on port', process.env.PORT || 10000);
 });
